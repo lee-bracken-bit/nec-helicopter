@@ -3,12 +3,16 @@ import math, time
 
 app = Flask(__name__)
 
-CENTER_LAT, CENTER_LON = 52.4523, -1.7175  # NEC centre
-RADIUS = 0.005      # degrees ~500 m
+CENTER_LAT, CENTER_LON = 52.4523, -1.7175   # NEC
+RADIUS = 0.005      # ~500 m
 PERIOD = 60.0       # seconds per full circle
-ALTITUDE = 150      # metres
+ALTITUDE = 150      # meters
 
-@app.route("/")
+@app.route("/")  # friendly landing page
+def index():
+    return "NEC Helicopter KML – use /kml"
+
+@app.route("/kml")  # THIS is the endpoint Google Earth needs
 def kml():
     t = (time.time() % PERIOD) / PERIOD * 2 * math.pi
     lat = CENTER_LAT + RADIUS * math.sin(t)
@@ -30,4 +34,5 @@ def kml():
   </Placemark>
 </Document>
 </kml>"""
-    return Response(kml_text, mimetype="application/vnd.google-earth.kml+xml")
+    return Response(kml_text,
+                    mimetype="application/vnd.google-earth.kml+xml")
